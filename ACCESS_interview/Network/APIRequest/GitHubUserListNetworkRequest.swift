@@ -21,10 +21,20 @@ class GitHubUserListNetworkRequest: NetworkRequestOperation {
       return
     }
     
-    print(userArray)
+//    print(userArray)
     
-#warning("implement: save to coredata")
-    
+    for userObject in userArray {
+      guard let id = userObject.object(forKey: "id") as? Int else {
+        continue
+      }
+      
+      DispatchQueue.global(qos: .default).sync {
+        GitUserHandler.updateUser(id: id,
+                                  login: userObject.object(forKey: "login") as? String ?? "",
+                                  avatarUrl: userObject.object(forKey: "avatar_url") as? String ?? "",
+                                  isSiteAdmin: NSNumber(booleanLiteral: userObject.object(forKey: "site_admin") as? Bool ?? false).intValue)
+      }
+    }
   }
   
   override func failure(_ error: Error?, _ data: Data?) {

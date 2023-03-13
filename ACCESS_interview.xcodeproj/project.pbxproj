@@ -20,6 +20,11 @@
 		B3B48A1F29BF47A600184D27 /* NetworkRequestOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A1E29BF47A600184D27 /* NetworkRequestOperation.swift */; };
 		B3B48A2229BF50F000184D27 /* GitHubUserDetailNetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2129BF50F000184D27 /* GitHubUserDetailNetworkRequest.swift */; };
 		B3B48A2429BF520500184D27 /* GitHubUserListNetworkRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2329BF520500184D27 /* GitHubUserListNetworkRequest.swift */; };
+		B3B48A2629BF5A9200184D27 /* GitUserHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2529BF5A9200184D27 /* GitUserHandler.swift */; };
+		B3B48A2829BF63EF00184D27 /* CoreDataHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2729BF63EF00184D27 /* CoreDataHandler.swift */; };
+		B3B48A2B29BF6BB300184D27 /* GitUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2929BF6BB300184D27 /* GitUserTableViewCell.swift */; };
+		B3B48A2C29BF6BB300184D27 /* GitUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3B48A2A29BF6BB300184D27 /* GitUserTableViewCell.xib */; };
+		B3B48A2E29BF6EBF00184D27 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2D29BF6EBF00184D27 /* String.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +43,11 @@
 		B3B48A1E29BF47A600184D27 /* NetworkRequestOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkRequestOperation.swift; sourceTree = "<group>"; };
 		B3B48A2129BF50F000184D27 /* GitHubUserDetailNetworkRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUserDetailNetworkRequest.swift; sourceTree = "<group>"; };
 		B3B48A2329BF520500184D27 /* GitHubUserListNetworkRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUserListNetworkRequest.swift; sourceTree = "<group>"; };
+		B3B48A2529BF5A9200184D27 /* GitUserHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitUserHandler.swift; sourceTree = "<group>"; };
+		B3B48A2729BF63EF00184D27 /* CoreDataHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataHandler.swift; sourceTree = "<group>"; };
+		B3B48A2929BF6BB300184D27 /* GitUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitUserTableViewCell.swift; sourceTree = "<group>"; };
+		B3B48A2A29BF6BB300184D27 /* GitUserTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GitUserTableViewCell.xib; sourceTree = "<group>"; };
+		B3B48A2D29BF6EBF00184D27 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +108,7 @@
 			children = (
 				B3B48A1429BF2A8400184D27 /* Handler */,
 				B3B48A0029BF107D00184D27 /* ACCESS_interview.xcdatamodeld */,
+				B3B48A2729BF63EF00184D27 /* CoreDataHandler.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -105,6 +116,7 @@
 		B3B48A1429BF2A8400184D27 /* Handler */ = {
 			isa = PBXGroup;
 			children = (
+				B3B48A2529BF5A9200184D27 /* GitUserHandler.swift */,
 			);
 			path = Handler;
 			sourceTree = "<group>";
@@ -112,6 +124,8 @@
 		B3B48A1529BF2A8F00184D27 /* CustomCell */ = {
 			isa = PBXGroup;
 			children = (
+				B3B48A2929BF6BB300184D27 /* GitUserTableViewCell.swift */,
+				B3B48A2A29BF6BB300184D27 /* GitUserTableViewCell.xib */,
 			);
 			path = CustomCell;
 			sourceTree = "<group>";
@@ -129,8 +143,9 @@
 		B3B48A1B29BF3FAF00184D27 /* Support */ = {
 			isa = PBXGroup;
 			children = (
-				B3B48A1C29BF3FC800184D27 /* Defines.swift */,
 				B3B48A0329BF107E00184D27 /* Assets.xcassets */,
+				B3B48A1C29BF3FC800184D27 /* Defines.swift */,
+				B3B48A2D29BF6EBF00184D27 /* String.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -205,6 +220,7 @@
 				B3B48A1229BF298C00184D27 /* GitHubUserListViewController.xib in Resources */,
 				B3B48A0729BF107E00184D27 /* LaunchScreen.storyboard in Resources */,
 				B3B48A0429BF107E00184D27 /* Assets.xcassets in Resources */,
+				B3B48A2C29BF6BB300184D27 /* GitUserTableViewCell.xib in Resources */,
 				B3B489FF29BF107D00184D27 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -217,7 +233,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3B489F829BF107D00184D27 /* AppDelegate.swift in Sources */,
+				B3B48A2E29BF6EBF00184D27 /* String.swift in Sources */,
 				B3B48A0229BF107D00184D27 /* ACCESS_interview.xcdatamodeld in Sources */,
+				B3B48A2829BF63EF00184D27 /* CoreDataHandler.swift in Sources */,
+				B3B48A2B29BF6BB300184D27 /* GitUserTableViewCell.swift in Sources */,
+				B3B48A2629BF5A9200184D27 /* GitUserHandler.swift in Sources */,
 				B3B48A1F29BF47A600184D27 /* NetworkRequestOperation.swift in Sources */,
 				B3B48A2429BF520500184D27 /* GitHubUserListNetworkRequest.swift in Sources */,
 				B3B48A1D29BF3FC800184D27 /* Defines.swift in Sources */,
@@ -300,6 +320,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -354,6 +375,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_UIUserInterfaceStyle = Light;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

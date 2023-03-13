@@ -23,8 +23,18 @@ class GitHubUserDetailNetworkRequest: NetworkRequestOperation {
     
     print(dictionary)
     
-#warning("implement: save to coredata")
+    guard let id = dictionary.object(forKey: "id") as? Int else {
+      print("id empty")
+      return
+    }
     
+    DispatchQueue.global(qos: .default).sync {
+      GitUserHandler.updateUserDetail(id: id,
+                                      name: dictionary.object(forKey: "name") as? String ?? "",
+                                      bio: dictionary.object(forKey: "bio") as? String ?? "",
+                                      location: dictionary.object(forKey: "location") as? String ?? "",
+                                      blog: dictionary.object(forKey: "blog") as? String ?? "")
+    }
   }
   
   override func failure(_ error: Error?, _ data: Data?) {
