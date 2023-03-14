@@ -50,6 +50,17 @@ class GitUserDetailViewController: UIViewController {
   @IBAction func dismissAction(_ sender: Any) {
     dismiss(animated: true)
   }
+  
+  @objc func tapBlog(_ sender: UITapGestureRecognizer) {
+    guard (userFRC.fetchedObjects?.count ?? 0) > 0,
+          let userObject = userFRC.fetchedObjects?[0],
+          let blogUrlString = userObject.blog,
+          let url = URL(string: blogUrlString) else {
+      return
+    }
+    
+    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+  }
 }
 
 extension GitUserDetailViewController: UITableViewDataSource {
@@ -95,6 +106,7 @@ extension GitUserDetailViewController: UITableViewDataSource {
       cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
       
       cell.loginLabel.text = userObject?.login
+      cell.loginLabel.isUserInteractionEnabled = false
       cell.badgeLabel.isHidden = userObject?.isSiteAdmin == 0
       return cell
       
@@ -108,11 +120,11 @@ extension GitUserDetailViewController: UITableViewDataSource {
       cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
       
       cell.loginLabel.text = userObject?.location
+      cell.loginLabel.isUserInteractionEnabled = false
       cell.badgeLabel.isHidden = true
       return cell
       
     case .Blog:
-#warning("implement: link url")
       let cell = tableView.dequeueReusableCell(withIdentifier: "GitUserTableViewCell") as! GitUserTableViewCell
       cell.userAvatarImageView.image = UIImage(systemName: "link")
       cell.userAvatarImageView.tintColor = .darkGray
@@ -121,7 +133,16 @@ extension GitUserDetailViewController: UITableViewDataSource {
       cell.selectionStyle = .none
       cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
       
-      cell.loginLabel.text = userObject?.blog
+      
+      let blogWording: String = userObject?.blog ?? ""
+      let blogAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
+                                                           .foregroundColor: UIColor.link]
+      
+      cell.loginLabel.attributedText = NSAttributedString(string: blogWording, attributes: blogAttributes)
+      
+      cell.loginLabel.isUserInteractionEnabled = true
+      cell.loginLabel.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(tapBlog)))
+      
       cell.badgeLabel.isHidden = true
       return cell
     }
