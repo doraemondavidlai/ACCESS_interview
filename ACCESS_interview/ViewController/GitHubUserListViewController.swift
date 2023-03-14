@@ -170,7 +170,8 @@ extension GitHubUserListViewController: UIScrollViewDelegate {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
     if checkItemReachLimit() { return }
     
-    let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - 34.0
+    var homeIndicatorFix: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 34.0
+    let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - homeIndicatorFix
     
     let revealHeight = endScrolling - scrollView.contentSize.height
     var scale: CGFloat = revealHeight / 40.0
@@ -193,8 +194,8 @@ extension GitHubUserListViewController: UIScrollViewDelegate {
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if checkItemReachLimit() { return }
     
-#warning("home indicator height 34.0 check")
-    let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - 34.0
+    var homeIndicatorFix: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 34.0
+    let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - homeIndicatorFix
     
     if endScrolling >= scrollView.contentSize.height + pullUpRevealHeight {
       NetworkController.shared.getUserList(since: sinceUserID)
