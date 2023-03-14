@@ -24,6 +24,7 @@ class GitUserDetailViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     
+    tableView.register(UINib(nibName: "AvatarTableViewCell", bundle: nil), forCellReuseIdentifier: "AvatarTableViewCell")
     tableView.register(UINib(nibName: "GitUserTableViewCell", bundle: nil), forCellReuseIdentifier: "GitUserTableViewCell")
     tableView.tableHeaderView = UIView(frame: CGRect(x: 0,
                                                      y: 0,
@@ -46,12 +47,9 @@ class GitUserDetailViewController: UIViewController {
     }
   }
   
-  
   @IBAction func dismissAction(_ sender: Any) {
     dismiss(animated: true)
   }
-  
-  
 }
 
 extension GitUserDetailViewController: UITableViewDataSource {
@@ -69,16 +67,19 @@ extension GitUserDetailViewController: UITableViewDataSource {
     
     switch DetailRows(rawValue: indexPath.row)! {
     case .Avatar:
-#warning("implement: new cell")
-      let cell = tableView.dequeueReusableCell(withIdentifier: "GitUserTableViewCell") as! GitUserTableViewCell
+      let cell = tableView.dequeueReusableCell(withIdentifier: "AvatarTableViewCell") as! AvatarTableViewCell
       if let avatarImageSrc = userObject?.avatarUrl,
          let avatarUrl = URL(string: avatarImageSrc) {
         cell.display(url: avatarUrl)
       }
       
-      cell.loginLabel.text = userObject?.name
-      cell.numberLabel.text = userObject?.bio
-      cell.badgeLabel.isHidden = true
+      cell.nameLabel.text = userObject?.name
+      cell.bioLabel.text = userObject?.bio
+      
+      cell.editNameAction = {
+        #warning("implement: edit name")
+      }
+      
       cell.accessoryType = .none
       cell.selectionStyle = .none
       cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)

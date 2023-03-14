@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B31A4F2729C0B2EC00DAE5C6 /* AvatarTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31A4F2529C0B2EC00DAE5C6 /* AvatarTableViewCell.swift */; };
+		B31A4F2829C0B2EC00DAE5C6 /* AvatarTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B31A4F2629C0B2EC00DAE5C6 /* AvatarTableViewCell.xib */; };
 		B3B489F829BF107D00184D27 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B489F729BF107D00184D27 /* AppDelegate.swift */; };
 		B3B489FF29BF107D00184D27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3B489FD29BF107D00184D27 /* Main.storyboard */; };
 		B3B48A0229BF107D00184D27 /* ACCESS_interview.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A0029BF107D00184D27 /* ACCESS_interview.xcdatamodeld */; };
@@ -30,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B31A4F2529C0B2EC00DAE5C6 /* AvatarTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarTableViewCell.swift; sourceTree = "<group>"; };
+		B31A4F2629C0B2EC00DAE5C6 /* AvatarTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AvatarTableViewCell.xib; sourceTree = "<group>"; };
 		B3B489F429BF107D00184D27 /* ACCESS_interview.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ACCESS_interview.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3B489F729BF107D00184D27 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3B489FE29BF107D00184D27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -130,6 +134,8 @@
 		B3B48A1529BF2A8F00184D27 /* CustomCell */ = {
 			isa = PBXGroup;
 			children = (
+				B31A4F2529C0B2EC00DAE5C6 /* AvatarTableViewCell.swift */,
+				B31A4F2629C0B2EC00DAE5C6 /* AvatarTableViewCell.xib */,
 				B3B48A2929BF6BB300184D27 /* GitUserTableViewCell.swift */,
 				B3B48A2A29BF6BB300184D27 /* GitUserTableViewCell.xib */,
 			);
@@ -223,6 +229,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B31A4F2829C0B2EC00DAE5C6 /* AvatarTableViewCell.xib in Resources */,
 				B3B48A0729BF107E00184D27 /* LaunchScreen.storyboard in Resources */,
 				B3B48A0429BF107E00184D27 /* Assets.xcassets in Resources */,
 				B3B48A3229C026CD00184D27 /* GitHubUserListViewController.xib in Resources */,
@@ -242,6 +249,7 @@
 				B3B48A3129C026CD00184D27 /* GitHubUserListViewController.swift in Sources */,
 				B3B489F829BF107D00184D27 /* AppDelegate.swift in Sources */,
 				B3B48A2E29BF6EBF00184D27 /* String.swift in Sources */,
+				B31A4F2729C0B2EC00DAE5C6 /* AvatarTableViewCell.swift in Sources */,
 				B3B48A0229BF107D00184D27 /* ACCESS_interview.xcdatamodeld in Sources */,
 				B3B48A2829BF63EF00184D27 /* CoreDataHandler.swift in Sources */,
 				B3B48A2B29BF6BB300184D27 /* GitUserTableViewCell.swift in Sources */,
