@@ -13,9 +13,27 @@ extension GitUser: NSManagedObjectType {
 }
 
 class GitUserHandler: NSObject {
-  class func getUserFRC() -> NSFetchedResultsController<GitUser> {
+  class func getUserListFRC() -> NSFetchedResultsController<GitUser> {
     let context = CoreDataHandler.shared.viewContext
     let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
+    request.sortDescriptors = [NSSortDescriptor(key: #keyPath(GitUser.userID), ascending: true)]
+    
+    let frc: NSFetchedResultsController<GitUser> = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)
+    
+    do {
+      try frc.performFetch()
+    } catch {
+      let fetchError = error as NSError
+      assertionFailure("\(fetchError), \(fetchError.userInfo)")
+    }
+    
+    return frc
+  }
+  
+  class func getUserFRC(userID: Int64) -> NSFetchedResultsController<GitUser> {
+    let context = CoreDataHandler.shared.viewContext
+    let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
+    request.predicate = NSPredicate(format: "%K == %d", #keyPath(GitUser.userID), userID)
     request.sortDescriptors = [NSSortDescriptor(key: #keyPath(GitUser.userID), ascending: true)]
     
     let frc: NSFetchedResultsController<GitUser> = NSFetchedResultsController(fetchRequest: request, managedObjectContext: context, sectionNameKeyPath: nil, cacheName: nil)

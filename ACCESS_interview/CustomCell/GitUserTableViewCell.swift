@@ -28,7 +28,9 @@ class GitUserTableViewCell: UITableViewCell {
     badgeLabel.textColor = .white
     badgeLabel.layer.cornerRadius = 10.0
     badgeLabel.layer.masksToBounds = true
-    
+  }
+  
+  func roundAvatarCorner() {
     userAvatarImageView.layer.cornerRadius = 20.0
     userAvatarImageView.layer.masksToBounds = true
   }

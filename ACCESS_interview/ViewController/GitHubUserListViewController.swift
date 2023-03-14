@@ -22,7 +22,7 @@ class GitHubUserListViewController: UIViewController {
   
   fileprivate let pullUpRevealHeight: CGFloat = 80.0
   fileprivate let dataLimit: Int = 100
-  fileprivate var userFRC: NSFetchedResultsController<GitUser>!
+  fileprivate var userListFRC: NSFetchedResultsController<GitUser>!
   fileprivate var sinceUserID: Int = 0
   
   override func viewDidLoad() {
@@ -58,8 +58,8 @@ class GitHubUserListViewController: UIViewController {
       sinceUserID = 0
     }
     
-    userFRC = GitUserHandler.getUserFRC()
-    userFRC.delegate = self
+    userListFRC = GitUserHandler.getUserListFRC()
+    userListFRC.delegate = self
     
     // incase no data
     NetworkController.shared.getUserList(since: 0)
@@ -121,15 +121,15 @@ class GitHubUserListViewController: UIViewController {
 
 extension GitHubUserListViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    let count = userFRC.fetchedObjects?.count ?? 0
+    let count = userListFRC.fetchedObjects?.count ?? 0
     setToolBar(count)
     return count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "GitUserTableViewCell") as! GitUserTableViewCell
-    
-    guard let userObject = userFRC.fetchedObjects?[indexPath.row] as? GitUser else {
+    cell.roundAvatarCorner()
+    guard let userObject = userListFRC.fetchedObjects?[indexPath.row] as? GitUser else {
       return cell
     }
     
@@ -147,15 +147,22 @@ extension GitHubUserListViewController: UITableViewDataSource {
     cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
     return cell
   }
-  
-  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    return 70.0
-  }
 }
 
 extension GitHubUserListViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-#warning("implement")
+    guard let userObject = userListFRC.fetchedObjects?[indexPath.row] as? GitUser else {
+      print("\(indexPath.row) can not get login name")
+      return
+    }
+    
+    let gitUserDetailVC = GitUserDetailViewController(nibName: "GitUserDetailViewController", bundle: nil)
+    gitUserDetailVC.userID = userObject.userID
+    present(gitUserDetailVC, animated: true)
+  }
+  
+  func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    return 70.0
   }
 }
 
@@ -186,6 +193,7 @@ extension GitHubUserListViewController: UIScrollViewDelegate {
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if checkItemReachLimit() { return }
     
+#warning("home indicator height 34.0 check")
     let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - 34.0
     
     if endScrolling >= scrollView.contentSize.height + pullUpRevealHeight {
