@@ -18,8 +18,19 @@ class GitUserTableViewCell: UITableViewCell {
   
   override func awakeFromNib() {
     super.awakeFromNib()
+    bgView.layer.cornerRadius = 5.0
+    bgView.layer.masksToBounds = true
     
+    let badgeText = "STAFF"
+    let font = UIFont.systemFont(ofSize: 16.0, weight: .regular)
+    badgeLabelWidthConstraint.constant = badgeText.width(withConstrainedHeight: 20.0, font: font) + 20.0
+    badgeLabel.backgroundColor = .blue
+    badgeLabel.textColor = .white
+    badgeLabel.layer.cornerRadius = 10.0
+    badgeLabel.layer.masksToBounds = true
     
+    userAvatarImageView.layer.cornerRadius = 20.0
+    userAvatarImageView.layer.masksToBounds = true
   }
   
   func display(url: URL) {

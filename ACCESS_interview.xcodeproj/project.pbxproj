@@ -12,8 +12,6 @@
 		B3B48A0229BF107D00184D27 /* ACCESS_interview.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A0029BF107D00184D27 /* ACCESS_interview.xcdatamodeld */; };
 		B3B48A0429BF107E00184D27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B3B48A0329BF107E00184D27 /* Assets.xcassets */; };
 		B3B48A0729BF107E00184D27 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3B48A0529BF107E00184D27 /* LaunchScreen.storyboard */; };
-		B3B48A1129BF298C00184D27 /* GitHubUserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A0F29BF298C00184D27 /* GitHubUserListViewController.swift */; };
-		B3B48A1229BF298C00184D27 /* GitHubUserListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3B48A1029BF298C00184D27 /* GitHubUserListViewController.xib */; };
 		B3B48A1829BF2AF200184D27 /* GitHubUserListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A1729BF2AF200184D27 /* GitHubUserListViewModel.swift */; };
 		B3B48A1A29BF3E5C00184D27 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A1929BF3E5C00184D27 /* NetworkManager.swift */; };
 		B3B48A1D29BF3FC800184D27 /* Defines.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A1C29BF3FC800184D27 /* Defines.swift */; };
@@ -25,6 +23,8 @@
 		B3B48A2B29BF6BB300184D27 /* GitUserTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2929BF6BB300184D27 /* GitUserTableViewCell.swift */; };
 		B3B48A2C29BF6BB300184D27 /* GitUserTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3B48A2A29BF6BB300184D27 /* GitUserTableViewCell.xib */; };
 		B3B48A2E29BF6EBF00184D27 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2D29BF6EBF00184D27 /* String.swift */; };
+		B3B48A3129C026CD00184D27 /* GitHubUserListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B48A2F29C026CD00184D27 /* GitHubUserListViewController.swift */; };
+		B3B48A3229C026CD00184D27 /* GitHubUserListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B3B48A3029C026CD00184D27 /* GitHubUserListViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,8 +35,6 @@
 		B3B48A0329BF107E00184D27 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B3B48A0629BF107E00184D27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B3B48A0829BF107E00184D27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B3B48A0F29BF298C00184D27 /* GitHubUserListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GitHubUserListViewController.swift; path = ../../../GitHubUserListViewController.swift; sourceTree = "<group>"; };
-		B3B48A1029BF298C00184D27 /* GitHubUserListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = GitHubUserListViewController.xib; path = ../../../GitHubUserListViewController.xib; sourceTree = "<group>"; };
 		B3B48A1729BF2AF200184D27 /* GitHubUserListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHubUserListViewModel.swift; sourceTree = "<group>"; };
 		B3B48A1929BF3E5C00184D27 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		B3B48A1C29BF3FC800184D27 /* Defines.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defines.swift; sourceTree = "<group>"; };
@@ -48,6 +46,8 @@
 		B3B48A2929BF6BB300184D27 /* GitUserTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitUserTableViewCell.swift; sourceTree = "<group>"; };
 		B3B48A2A29BF6BB300184D27 /* GitUserTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GitUserTableViewCell.xib; sourceTree = "<group>"; };
 		B3B48A2D29BF6EBF00184D27 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		B3B48A2F29C026CD00184D27 /* GitHubUserListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GitHubUserListViewController.swift; sourceTree = "<group>"; };
+		B3B48A3029C026CD00184D27 /* GitHubUserListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = GitHubUserListViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,9 +96,9 @@
 		B3B48A0E29BF296800184D27 /* ViewController */ = {
 			isa = PBXGroup;
 			children = (
+				B3B48A2F29C026CD00184D27 /* GitHubUserListViewController.swift */,
+				B3B48A3029C026CD00184D27 /* GitHubUserListViewController.xib */,
 				B3B48A1729BF2AF200184D27 /* GitHubUserListViewModel.swift */,
-				B3B48A0F29BF298C00184D27 /* GitHubUserListViewController.swift */,
-				B3B48A1029BF298C00184D27 /* GitHubUserListViewController.xib */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -217,9 +217,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3B48A1229BF298C00184D27 /* GitHubUserListViewController.xib in Resources */,
 				B3B48A0729BF107E00184D27 /* LaunchScreen.storyboard in Resources */,
 				B3B48A0429BF107E00184D27 /* Assets.xcassets in Resources */,
+				B3B48A3229C026CD00184D27 /* GitHubUserListViewController.xib in Resources */,
 				B3B48A2C29BF6BB300184D27 /* GitUserTableViewCell.xib in Resources */,
 				B3B489FF29BF107D00184D27 /* Main.storyboard in Resources */,
 			);
@@ -232,6 +232,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3B48A3129C026CD00184D27 /* GitHubUserListViewController.swift in Sources */,
 				B3B489F829BF107D00184D27 /* AppDelegate.swift in Sources */,
 				B3B48A2E29BF6EBF00184D27 /* String.swift in Sources */,
 				B3B48A0229BF107D00184D27 /* ACCESS_interview.xcdatamodeld in Sources */,
@@ -243,7 +244,6 @@
 				B3B48A1D29BF3FC800184D27 /* Defines.swift in Sources */,
 				B3B48A1A29BF3E5C00184D27 /* NetworkManager.swift in Sources */,
 				B3B48A1829BF2AF200184D27 /* GitHubUserListViewModel.swift in Sources */,
-				B3B48A1129BF298C00184D27 /* GitHubUserListViewController.swift in Sources */,
 				B3B48A2229BF50F000184D27 /* GitHubUserDetailNetworkRequest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
