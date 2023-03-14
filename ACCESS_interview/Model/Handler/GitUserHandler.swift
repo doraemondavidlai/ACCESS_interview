@@ -30,40 +30,43 @@ class GitUserHandler: NSObject {
     return frc
   }
   
-  class func updateUser(id: Int, login: String, avatarUrl: String, isSiteAdmin: Int) {
-    let context = CoreDataHandler.shared.backgroundContext
+  class func updateUsers(_ users: [NSMutableDictionary]) {
+    let context = CoreDataHandler.shared.viewContext
     let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
-    request.predicate = NSPredicate(format: "%K == %d", #keyPath(GitUser.userID), id)
     
     guard let results = try? context.fetch(request) else { return }
     
-    if !results.isEmpty {
-      // update
-      guard let record = results.first else {
-        return
+    context.performAndWait {
+      for userObject in users {
+        guard let id = userObject.object(forKey: "id") as? Int else {
+          continue
+        }
+        
+        if let index = results.firstIndex(where: { gitUser in
+          gitUser.userID == id
+        }) {
+          // update
+          let record: GitUser = results[index]
+          record.userID = Int64(id)
+          record.login = userObject.object(forKey: "login") as? String ?? ""
+          record.avatarUrl = userObject.object(forKey: "avatar_url") as? String ?? ""
+          record.isSiteAdmin = NSNumber(booleanLiteral: userObject.object(forKey: "site_admin") as? Bool ?? false).int32Value
+          
+        } else {
+          // add
+          let record: GitUser = context.insertObject()
+          record.userID = Int64(id)
+          record.login = userObject.object(forKey: "login") as? String ?? ""
+          record.avatarUrl = userObject.object(forKey: "avatar_url") as? String ?? ""
+          record.isSiteAdmin = NSNumber(booleanLiteral: userObject.object(forKey: "site_admin") as? Bool ?? false).int32Value
+          record.name = nil
+          record.bio = nil
+          record.location = nil
+          record.blog = nil
+        }
       }
       
-      context.performAndWait {
-        record.userID = Int64(id)
-        record.login = login
-        record.avatarUrl = avatarUrl
-        record.isSiteAdmin = Int32(isSiteAdmin)
-        context.saveContext()
-      }
-    } else {
-      // add
-      context.performAndWait {
-        let record: GitUser = context.insertObject()
-        record.userID = Int64(id)
-        record.login = login
-        record.avatarUrl = avatarUrl
-        record.isSiteAdmin = Int32(isSiteAdmin)
-        record.name = nil
-        record.bio = nil
-        record.location = nil
-        record.blog = nil
-        context.saveContext()
-      }
+      context.saveContext()
     }
   }
   

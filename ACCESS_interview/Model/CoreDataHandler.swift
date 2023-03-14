@@ -41,10 +41,6 @@ class CoreDataHandler: NSObject {
   lazy var viewContext: NSManagedObjectContext = {
     return persistentContainer.viewContext
   }()
-  
-  lazy var backgroundContext: NSManagedObjectContext = {
-    return persistentContainer.newBackgroundContext()
-  }()
 }
 
 protocol NSManagedObjectType {

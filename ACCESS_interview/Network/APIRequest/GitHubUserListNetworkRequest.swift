@@ -23,17 +23,8 @@ class GitHubUserListNetworkRequest: NetworkRequestOperation {
     
 //    print(userArray)
     
-    for userObject in userArray {
-      guard let id = userObject.object(forKey: "id") as? Int else {
-        continue
-      }
-      
-      DispatchQueue.global(qos: .default).sync {
-        GitUserHandler.updateUser(id: id,
-                                  login: userObject.object(forKey: "login") as? String ?? "",
-                                  avatarUrl: userObject.object(forKey: "avatar_url") as? String ?? "",
-                                  isSiteAdmin: NSNumber(booleanLiteral: userObject.object(forKey: "site_admin") as? Bool ?? false).intValue)
-      }
+    DispatchQueue.global(qos: .default).async {
+      GitUserHandler.updateUsers(userArray)
     }
   }
   

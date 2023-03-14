@@ -23,6 +23,7 @@ class GitUserTableViewCell: UITableViewCell {
   }
   
   func display(url: URL) {
+    userAvatarImageView.image = nil
     indicator.startAnimating()
     
     DispatchQueue.global(qos: .default).async { [weak self] in
