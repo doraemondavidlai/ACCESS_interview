@@ -18,10 +18,19 @@ class GitHubUserListNetworkRequest: NetworkRequestOperation {
     
     guard let userArray = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? [NSMutableDictionary] else {
       print(data as Any)
+      print(String(data: data, encoding: .utf8) as Any)
       return
     }
     
 //    print(userArray)
+    
+    if userArray.count > 0,
+       let lastItem = userArray.last,
+       let id = lastItem.object(forKey: "id") as? Int {
+      NotificationCenter.default.post(name: NotificationType.LastUserID.notificationName,
+                                      object: nil,
+                                      userInfo: ["lastID": NSNumber(integerLiteral: id)])
+    }
     
     DispatchQueue.global(qos: .default).async {
       GitUserHandler.updateUsers(userArray)

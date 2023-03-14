@@ -10,6 +10,7 @@ import Foundation
 class NetworkRequestOperation: Operation {
   var data: Data!
   var error: Error?
+  fileprivate let accessToken: String = "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" // Available for 30 days since 2023/03/14
   fileprivate var timeoutIntervalForRequest: Double = 10
   fileprivate var task: URLSessionTask!
   
@@ -53,6 +54,7 @@ class NetworkRequestOperation: Operation {
                              timeoutInterval: timeoutIntervalForRequest)
     request.httpMethod = "GET"
     request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    request.setValue(String(format: "Bearer %@", accessToken), forHTTPHeaderField: "Authorization")
     
     task = URLSession.shared.dataTask(with: request) { data, response, error in
       if error != nil {
@@ -66,6 +68,10 @@ class NetworkRequestOperation: Operation {
       }
       
       self.success(nonNilData)
+    }
+    
+    if let url = task.originalRequest?.url {
+      print("[task send]: \(url)")
     }
     
     task.resume()

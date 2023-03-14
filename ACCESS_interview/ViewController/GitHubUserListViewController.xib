@@ -10,6 +10,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="GitHubUserListViewController" customModule="ACCESS_interview" customModuleProvider="target">
             <connections>
+                <outlet property="pullUpHintLabel" destination="Jgu-vR-Tki" id="87P-tI-cnj"/>
+                <outlet property="pullUpImageView" destination="sZb-QQ-RQ4" id="uPi-1z-8gD"/>
+                <outlet property="pullUpStackView" destination="YWJ-xx-0o6" id="mmh-26-ehi"/>
                 <outlet property="tableView" destination="BvQ-9w-AUX" id="chh-gX-6DZ"/>
                 <outlet property="toolBar" destination="oQp-ne-hDa" id="ahz-uZ-2b9"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -20,6 +23,25 @@
             <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="YWJ-xx-0o6">
+                    <rect key="frame" x="100.66666666666667" y="773" width="191.66666666666663" height="30"/>
+                    <subviews>
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sZb-QQ-RQ4">
+                            <rect key="frame" x="0.0" y="0.0" width="30" height="30"/>
+                            <color key="tintColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="30" id="cWs-RL-Uvi"/>
+                                <constraint firstAttribute="width" constant="30" id="e2p-1G-D0n"/>
+                            </constraints>
+                        </imageView>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Pull up to fetch more" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jgu-vR-Tki">
+                            <rect key="frame" x="33.999999999999986" y="0.0" width="157.66666666666663" height="30"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="BvQ-9w-AUX">
                     <rect key="frame" x="0.0" y="103" width="393" height="749"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -36,8 +58,10 @@
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="BvQ-9w-AUX" secondAttribute="trailing" id="1ug-3e-eaG"/>
                 <constraint firstItem="oQp-ne-hDa" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="82t-Dg-66g"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="YWJ-xx-0o6" secondAttribute="bottom" constant="15" id="DFZ-qp-N4Z"/>
                 <constraint firstItem="oQp-ne-hDa" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Kbr-em-wB3"/>
                 <constraint firstAttribute="bottom" secondItem="BvQ-9w-AUX" secondAttribute="bottom" id="UNS-AG-XPI"/>
+                <constraint firstItem="YWJ-xx-0o6" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="Wby-cJ-nHg"/>
                 <constraint firstAttribute="trailing" secondItem="oQp-ne-hDa" secondAttribute="trailing" id="bDp-mW-I4q"/>
                 <constraint firstItem="BvQ-9w-AUX" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="oXZ-w6-4e7"/>
                 <constraint firstItem="BvQ-9w-AUX" firstAttribute="top" secondItem="oQp-ne-hDa" secondAttribute="bottom" id="uQO-xZ-2vK"/>

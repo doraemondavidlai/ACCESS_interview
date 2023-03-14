@@ -18,6 +18,7 @@ class GitHubUserDetailNetworkRequest: NetworkRequestOperation {
     
     guard let dictionary = try? JSONSerialization.jsonObject(with: data, options: .mutableContainers) as? NSMutableDictionary else {
       print(data as Any)
+      print(String(data: data, encoding: .utf8) as Any)
       return
     }
     

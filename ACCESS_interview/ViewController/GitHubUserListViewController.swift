@@ -8,12 +8,22 @@
 import UIKit
 import CoreData
 
+fileprivate enum PullUpState {
+  case PullHint
+  case Release
+}
+
 class GitHubUserListViewController: UIViewController {
   @IBOutlet weak var toolBar: UIToolbar!
   @IBOutlet weak var tableView: UITableView!
+  @IBOutlet weak var pullUpStackView: UIStackView!
+  @IBOutlet weak var pullUpImageView: UIImageView!
+  @IBOutlet weak var pullUpHintLabel: UILabel!
   
-  fileprivate var refreshControl: UIRefreshControl!
+  fileprivate let pullUpRevealHeight: CGFloat = 80.0
+  fileprivate let dataLimit: Int = 100
   fileprivate var userFRC: NSFetchedResultsController<GitUser>!
+  fileprivate var sinceUserID: Int = 0
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -35,39 +45,85 @@ class GitHubUserListViewController: UIViewController {
     tableView.layer.shadowRadius = 2.0
     
     // toolBar
-    let clearItem = UIBarButtonItem(title: "Clear All", image: nil, target: self, action: #selector(clearAllUser))
-    let spaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
-    let initialItem = UIBarButtonItem(title: "Re-initial", image: nil, target: self, action: #selector(refetchUsers))
-    
-    toolBar.setItems([clearItem, spaceItem, initialItem], animated: false)
     toolBar.setBackgroundImage(UIImage(), forToolbarPosition: .any, barMetrics: .default)
     toolBar.backgroundColor = nil
     toolBar.clipsToBounds = true
     
-    refreshControl = UIRefreshControl()
-    tableView.addSubview(refreshControl)
+    pullUpStackView.alpha = 0.0
+    setPullUpState(.PullHint)
+    
+    if let savedUserID = UserDefaults.standard.object(forKey: "SavedSinceUserID") as? Int {
+      sinceUserID = savedUserID
+    } else {
+      sinceUserID = 0
+    }
     
     userFRC = GitUserHandler.getUserFRC()
     userFRC.delegate = self
-  }
-  
-  override func viewDidAppear(_ animated: Bool) {
-    super.viewDidAppear(animated)
+    
+    // incase no data
     NetworkController.shared.getUserList(since: 0)
   }
   
+  override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    NotificationCenter.default.addObserver(self, selector: #selector(setLastUserID), name: NotificationType.LastUserID.notificationName, object: nil)
+  }
+  
+  override func viewWillDisappear(_ animated: Bool) {
+    super.viewWillDisappear(animated)
+    NotificationCenter.default.removeObserver(self, name: NotificationType.LastUserID.notificationName, object: nil)
+  }
+  
   @objc func clearAllUser() {
+    setSinceUserID(0)
     GitUserHandler.deleteAllData()
   }
   
   @objc func refetchUsers() {
-    NetworkController.shared.getUserList(since: 0)
+    setSinceUserID(0)
+    NetworkController.shared.getUserList(since: sinceUserID)
+  }
+  
+  fileprivate func setToolBar(_ userCount: Int) {
+    let clearItem = UIBarButtonItem(title: "Clear All", image: nil, target: self, action: #selector(clearAllUser))
+    let spaceItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
+    let initialItem = UIBarButtonItem(title: "Re-initial", image: nil, target: self, action: #selector(refetchUsers))
+    
+    if userCount > 0 {
+      toolBar.setItems([clearItem, spaceItem], animated: false)
+    } else {
+      toolBar.setItems([clearItem, spaceItem, initialItem], animated: false)
+    }
+  }
+  
+  fileprivate func setPullUpState(_ state: PullUpState) {
+    switch state {
+    case .PullHint:
+      pullUpImageView.image = UIImage(systemName: "arrow.up")
+      pullUpHintLabel.text = "Pull up to fetch more"
+      
+    case .Release:
+      pullUpImageView.image = UIImage(systemName: "arrow.down.doc")
+      pullUpHintLabel.text = "Release to fetch"
+    }
+  }
+  
+  fileprivate func checkItemReachLimit() -> Bool {
+    return tableView(tableView, numberOfRowsInSection: 0) >= dataLimit
+  }
+  
+  fileprivate func setSinceUserID(_ newUserID: Int) {
+    sinceUserID = newUserID
+    UserDefaults.standard.set(NSNumber(integerLiteral: newUserID), forKey: "SavedSinceUserID")
   }
 }
 
 extension GitHubUserListViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return userFRC.fetchedObjects?.count ?? 0
+    let count = userFRC.fetchedObjects?.count ?? 0
+    setToolBar(count)
+    return count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -98,7 +154,44 @@ extension GitHubUserListViewController: UITableViewDataSource {
 }
 
 extension GitHubUserListViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+#warning("implement")
+  }
+}
+
+extension GitHubUserListViewController: UIScrollViewDelegate {
+  func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    if checkItemReachLimit() { return }
+    
+    let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - 34.0
+    
+    let revealHeight = endScrolling - scrollView.contentSize.height
+    var scale: CGFloat = revealHeight / 40.0
+    
+    if scale < 0 {
+      scale = 0.0
+    } else if scale > 1 {
+      scale = 1.0
+    }
+    
+    pullUpStackView.alpha = scale
+    
+    if revealHeight > pullUpRevealHeight {
+      setPullUpState(.Release)
+    } else {
+      setPullUpState(.PullHint)
+    }
+  }
   
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if checkItemReachLimit() { return }
+    
+    let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - 34.0
+    
+    if endScrolling >= scrollView.contentSize.height + pullUpRevealHeight {
+      NetworkController.shared.getUserList(since: sinceUserID)
+    }
+  }
 }
 
 extension GitHubUserListViewController: NSFetchedResultsControllerDelegate {
@@ -124,6 +217,21 @@ extension GitHubUserListViewController: NSFetchedResultsControllerDelegate {
   
   func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     tableView.endUpdates()
-//    tableView.reloadData()
+    
+    pullUpStackView.alpha = 0.0
+    setPullUpState(.PullHint)
+  }
+}
+
+// MARK - Observer
+extension GitHubUserListViewController {
+  @objc func setLastUserID(_ notification: Notification) {
+    guard let passInDictionary = notification.userInfo as NSDictionary?,
+          let lastID = passInDictionary.object(forKey: "lastID") as? Int else {
+      print("error: notification.userInfo get msgType error!")
+      return
+    }
+    
+    setSinceUserID(lastID)
   }
 }

@@ -8,7 +8,7 @@
 import Foundation
 
 enum NotificationType: String {
-  case Network                        = "NetworkResponse"
+  case LastUserID                         = "LastUserID"
   
   var notificationName: Notification.Name {
     return Notification.Name(rawValue: self.rawValue)
