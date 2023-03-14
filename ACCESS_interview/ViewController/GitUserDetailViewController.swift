@@ -88,7 +88,32 @@ extension GitUserDetailViewController: UITableViewDataSource {
       cell.bioLabel.text = userObject?.bio
       
       cell.editNameAction = {
-        #warning("implement: edit name")
+        let alert = UIAlertController(title: "Edit Name", message: nil, preferredStyle: .alert)
+        
+        alert.addTextField { (textField) in
+          textField.placeholder = "New Name"
+          textField.text = userObject?.name ?? ""
+          textField.delegate = self
+        }
+        
+        alert.addAction(UIAlertAction(title: "Update", style: .default, handler: { [weak alert] (_) in
+          guard let id = userObject?.userID,
+                let textFieldsInAlert = alert?.textFields,
+                textFieldsInAlert.count > 0,
+                let inputText = textFieldsInAlert[0].text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
+            return
+          }
+          
+          if inputText == userObject?.name {
+            return
+          }
+          
+          GitUserHandler.updateUserName(id: Int(id), name: inputText)
+        }))
+        
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        
+        self.present(alert, animated: true, completion: nil)
       }
       
       cell.accessoryType = .none
@@ -105,7 +130,7 @@ extension GitUserDetailViewController: UITableViewDataSource {
       cell.selectionStyle = .none
       cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
       
-      cell.loginLabel.text = userObject?.login
+      cell.loginLabel.attributedText = NSAttributedString(string: userObject?.login ?? "")
       cell.loginLabel.isUserInteractionEnabled = false
       cell.badgeLabel.isHidden = userObject?.isSiteAdmin == 0
       return cell
@@ -119,7 +144,7 @@ extension GitUserDetailViewController: UITableViewDataSource {
       cell.selectionStyle = .none
       cell.separatorInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: UIScreen.main.bounds.width)
       
-      cell.loginLabel.text = userObject?.location
+      cell.loginLabel.attributedText = NSAttributedString(string: userObject?.location ?? "")
       cell.loginLabel.isUserInteractionEnabled = false
       cell.badgeLabel.isHidden = true
       return cell
@@ -137,7 +162,6 @@ extension GitUserDetailViewController: UITableViewDataSource {
       let blogWording: String = userObject?.blog ?? ""
       let blogAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
                                                            .foregroundColor: UIColor.link]
-      
       cell.loginLabel.attributedText = NSAttributedString(string: blogWording, attributes: blogAttributes)
       
       cell.loginLabel.isUserInteractionEnabled = true
@@ -164,5 +188,11 @@ extension GitUserDetailViewController: UITableViewDelegate {
 extension GitUserDetailViewController: NSFetchedResultsControllerDelegate {
   func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
     tableView.reloadData()
+  }
+}
+
+extension GitUserDetailViewController: UITextFieldDelegate {
+  func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+    return false
   }
 }

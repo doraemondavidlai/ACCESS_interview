@@ -109,6 +109,24 @@ class GitUserHandler: NSObject {
     }
   }
   
+  class func updateUserName(id: Int, name: String) {
+    let context = CoreDataHandler.shared.viewContext
+    let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
+    request.predicate = NSPredicate(format: "%K == %d", #keyPath(GitUser.userID), id)
+    
+    guard let results = try? context.fetch(request) else { return }
+    
+    // update
+    guard let record = results.first else {
+      return
+    }
+    
+    context.performAndWait {
+      record.name = name
+      context.saveContext()
+    }
+  }
+  
   class func deleteAllData() {
     let context = CoreDataHandler.shared.viewContext
     let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
