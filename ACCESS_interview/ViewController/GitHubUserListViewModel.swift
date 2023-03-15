@@ -31,10 +31,6 @@ extension GitHubUserListViewModel {
     }
   }
   
-  func setFRC() {
-    userListFRC = GitUserHandler.getUserListFRC()
-  }
-  
   func getFRCDataCount() -> Int {
     return userListFRC.fetchedObjects?.count ?? 0
   }
@@ -47,6 +43,10 @@ extension GitHubUserListViewModel {
 
 // MARK: DB
 extension GitHubUserListViewModel {
+  func setFRC() {
+    userListFRC = GitUserHandler.getUserListFRC()
+  }
+  
   func deleteAllUser() {
     GitUserHandler.deleteAllData()
   }

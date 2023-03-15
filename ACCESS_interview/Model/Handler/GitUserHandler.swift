@@ -88,7 +88,7 @@ class GitUserHandler: NSObject {
     }
   }
   
-  class func updateUserDetail(id: Int, name: String, bio: String, location: String, blog: String) {
+  class func updateUserDetail(id: Int64, name: String, bio: String, location: String, blog: String) {
     let context = CoreDataHandler.shared.viewContext
     let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
     request.predicate = NSPredicate(format: "%K == %d", #keyPath(GitUser.userID), id)
@@ -109,7 +109,7 @@ class GitUserHandler: NSObject {
     }
   }
   
-  class func updateUserName(id: Int, name: String) {
+  class func updateUserName(id: Int64, name: String) {
     let context = CoreDataHandler.shared.viewContext
     let request: NSFetchRequest<GitUser> = GitUser.fetchRequest()
     request.predicate = NSPredicate(format: "%K == %d", #keyPath(GitUser.userID), id)

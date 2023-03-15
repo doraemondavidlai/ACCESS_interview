@@ -8,7 +8,7 @@
 import UIKit
 import CoreData
 
-fileprivate enum DetailRows: Int, CaseIterable {
+fileprivate enum GitUserDetailRows: Int, CaseIterable {
   case Avatar                   = 0
   case LoginName
   case Location
@@ -19,32 +19,22 @@ class GitUserDetailViewController: UIViewController {
   @IBOutlet weak var tableView: UITableView!
   
   var userID: Int64!
-  fileprivate var userFRC: NSFetchedResultsController<GitUser>!
+  fileprivate let vm = GitUserDetailViewModel()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     
     tableView.register(UINib(nibName: "AvatarTableViewCell", bundle: nil), forCellReuseIdentifier: "AvatarTableViewCell")
     tableView.register(UINib(nibName: "GitUserTableViewCell", bundle: nil), forCellReuseIdentifier: "GitUserTableViewCell")
-    tableView.tableHeaderView = UIView(frame: CGRect(x: 0,
-                                                     y: 0,
-                                                     width: tableView.frame.width,
-                                                     height: CGFloat.leastNormalMagnitude))
     tableView.tableFooterView = UIView()
     tableView.backgroundColor = .clear
     tableView.delegate = self
     tableView.dataSource = self
     tableView.separatorStyle = .none
     
-    userFRC = GitUserHandler.getUserFRC(userID: userID)
-    userFRC.delegate = self
-    
-    if (userFRC.fetchedObjects?.count ?? 0) > 0,
-       let user = userFRC.fetchedObjects?[0],
-       user.name == nil,
-       let loginName = user.login {
-      NetworkController.shared.getUserDetail(loginName: loginName)
-    }
+    vm.setFRC(id: userID)
+    vm.userFRC.delegate = self
+    vm.checkIsNeedToFetchDetail()
   }
   
   @IBAction func dismissAction(_ sender: Any) {
@@ -52,31 +42,20 @@ class GitUserDetailViewController: UIViewController {
   }
   
   @objc func tapBlog(_ sender: UITapGestureRecognizer) {
-    guard (userFRC.fetchedObjects?.count ?? 0) > 0,
-          let userObject = userFRC.fetchedObjects?[0],
-          let blogUrlString = userObject.blog,
-          let url = URL(string: blogUrlString) else {
-      return
-    }
-    
+    guard let url = vm.getBlogURL() else { return }
     UIApplication.shared.open(url, options: [:], completionHandler: nil)
   }
 }
 
 extension GitUserDetailViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    return DetailRows.allCases.count
+    return GitUserDetailRows.allCases.count
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    var userObject: GitUser? = nil
+    let userObject: GitUser? = vm.getUserObject()
     
-    if (userFRC.fetchedObjects?.count ?? 0) > 0,
-       let user = userFRC.fetchedObjects?[0] {
-      userObject = user
-    }
-    
-    switch DetailRows(rawValue: indexPath.row)! {
+    switch GitUserDetailRows(rawValue: indexPath.row)! {
     case .Avatar:
       let cell = tableView.dequeueReusableCell(withIdentifier: "AvatarTableViewCell") as! AvatarTableViewCell
       cell.display(userObject?.avatarUrl)
@@ -93,18 +72,13 @@ extension GitUserDetailViewController: UITableViewDataSource {
         }
         
         alert.addAction(UIAlertAction(title: "Update", style: .default, handler: { [weak alert] (_) in
-          guard let id = userObject?.userID,
-                let textFieldsInAlert = alert?.textFields,
+          guard let textFieldsInAlert = alert?.textFields,
                 textFieldsInAlert.count > 0,
                 let inputText = textFieldsInAlert[0].text?.trimmingCharacters(in: .whitespacesAndNewlines) else {
             return
           }
           
-          if inputText == userObject?.name {
-            return
-          }
-          
-          GitUserHandler.updateUserName(id: Int(id), name: inputText)
+          self.vm.updateUserName(inputText)
         }))
         
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
@@ -171,7 +145,7 @@ extension GitUserDetailViewController: UITableViewDataSource {
 
 extension GitUserDetailViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    switch DetailRows(rawValue: indexPath.row)! {
+    switch GitUserDetailRows(rawValue: indexPath.row)! {
     case .Avatar:
       return 300.0
       

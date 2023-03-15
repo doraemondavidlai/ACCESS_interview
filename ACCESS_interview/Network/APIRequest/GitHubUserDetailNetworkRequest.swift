@@ -22,9 +22,9 @@ class GitHubUserDetailNetworkRequest: NetworkRequestOperation {
       return
     }
     
-    print(dictionary)
+//    print(dictionary)
     
-    guard let id = dictionary.object(forKey: "id") as? Int else {
+    guard let id = dictionary.object(forKey: "id") as? Int64 else {
       print("id empty")
       return
     }
