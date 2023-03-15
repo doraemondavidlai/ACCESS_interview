@@ -8,11 +8,6 @@
 import UIKit
 import CoreData
 
-fileprivate enum PullUpState {
-  case PullHint
-  case Release
-}
-
 class GitHubUserListViewController: UIViewController {
   @IBOutlet weak var toolBar: UIToolbar!
   @IBOutlet weak var tableView: UITableView!
@@ -20,20 +15,13 @@ class GitHubUserListViewController: UIViewController {
   @IBOutlet weak var pullUpImageView: UIImageView!
   @IBOutlet weak var pullUpHintLabel: UILabel!
   
-  fileprivate let pullUpRevealHeight: CGFloat = 80.0
-  fileprivate let dataLimit: Int = 100
-  fileprivate var userListFRC: NSFetchedResultsController<GitUser>!
-  fileprivate var sinceUserID: Int = 0
+  fileprivate let vm = GitHubUserListViewModel()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = UIColor.black.withAlphaComponent(0.1)
     
     tableView.register(UINib(nibName: "GitUserTableViewCell", bundle: nil), forCellReuseIdentifier: "GitUserTableViewCell")
-    tableView.tableHeaderView = UIView(frame: CGRect(x: 0,
-                                                     y: 0,
-                                                     width: tableView.frame.width,
-                                                     height: CGFloat.leastNormalMagnitude))
     tableView.tableFooterView = UIView()
     tableView.backgroundColor = .clear
     tableView.delegate = self
@@ -52,37 +40,22 @@ class GitHubUserListViewController: UIViewController {
     pullUpStackView.alpha = 0.0
     setPullUpState(.PullHint)
     
-    if let savedUserID = UserDefaults.standard.object(forKey: "SavedSinceUserID") as? Int {
-      sinceUserID = savedUserID
-    } else {
-      sinceUserID = 0
-    }
-    
-    userListFRC = GitUserHandler.getUserListFRC()
-    userListFRC.delegate = self
+    vm.setFRC()
+    vm.userListFRC.delegate = self
+    vm.updateSinceUserIDFromFRC()
     
     // incase no data
-    NetworkController.shared.getUserList(since: 0)
-  }
-  
-  override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
-    NotificationCenter.default.addObserver(self, selector: #selector(setLastUserID), name: NotificationType.LastUserID.notificationName, object: nil)
-  }
-  
-  override func viewWillDisappear(_ animated: Bool) {
-    super.viewWillDisappear(animated)
-    NotificationCenter.default.removeObserver(self, name: NotificationType.LastUserID.notificationName, object: nil)
+    if vm.getFRCDataCount() < 1 {
+      vm.getUserList(0)
+    }
   }
   
   @objc func clearAllUser() {
-    setSinceUserID(0)
-    GitUserHandler.deleteAllData()
+    vm.deleteAllUser()
   }
   
   @objc func refetchUsers() {
-    setSinceUserID(0)
-    NetworkController.shared.getUserList(since: sinceUserID)
+    vm.getUserList()
   }
   
   fileprivate func setToolBar(_ userCount: Int) {
@@ -106,22 +79,21 @@ class GitHubUserListViewController: UIViewController {
     case .Release:
       pullUpImageView.image = UIImage(systemName: "arrow.down.doc")
       pullUpHintLabel.text = "Release to fetch"
+      
+    case .ReachLimit:
+      pullUpImageView.image = UIImage(systemName: "hand.raised.fill")
+      pullUpHintLabel.text = "Reach fetch limit \(vm.dataLimit)"
     }
   }
   
   fileprivate func checkItemReachLimit() -> Bool {
-    return tableView(tableView, numberOfRowsInSection: 0) >= dataLimit
-  }
-  
-  fileprivate func setSinceUserID(_ newUserID: Int) {
-    sinceUserID = newUserID
-    UserDefaults.standard.set(NSNumber(integerLiteral: newUserID), forKey: "SavedSinceUserID")
+    return tableView(tableView, numberOfRowsInSection: 0) >= vm.dataLimit
   }
 }
 
 extension GitHubUserListViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    let count = userListFRC.fetchedObjects?.count ?? 0
+    let count = vm.getFRCDataCount()
     setToolBar(count)
     return count
   }
@@ -129,18 +101,15 @@ extension GitHubUserListViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: "GitUserTableViewCell") as! GitUserTableViewCell
     cell.roundAvatarCorner()
-    guard let userObject = userListFRC.fetchedObjects?[indexPath.row] as? GitUser else {
+    
+    guard let userObject = vm.getFRCUserObject(at: indexPath.row) else {
       return cell
     }
     
+    cell.display(userObject.avatarUrl)
     cell.loginLabel.text = userObject.login
     cell.badgeLabel.isHidden = userObject.isSiteAdmin == 0
     cell.numberLabel.text = "\(indexPath.row)"
-    
-    if let avatarImageSrc = userObject.avatarUrl,
-       let avatarUrl = URL(string: avatarImageSrc) {
-      cell.display(url: avatarUrl)
-    }
     
     cell.accessoryType = .none
     cell.selectionStyle = .none
@@ -151,7 +120,7 @@ extension GitHubUserListViewController: UITableViewDataSource {
 
 extension GitHubUserListViewController: UITableViewDelegate {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-    guard let userObject = userListFRC.fetchedObjects?[indexPath.row] as? GitUser else {
+    guard let userObject = vm.getFRCUserObject(at: indexPath.row) else {
       print("\(indexPath.row) can not get login name")
       return
     }
@@ -168,9 +137,7 @@ extension GitHubUserListViewController: UITableViewDelegate {
 
 extension GitHubUserListViewController: UIScrollViewDelegate {
   func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    if checkItemReachLimit() { return }
-    
-    var homeIndicatorFix: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 34.0
+    let homeIndicatorFix: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 34.0
     let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - homeIndicatorFix
     
     let revealHeight = endScrolling - scrollView.contentSize.height
@@ -184,7 +151,9 @@ extension GitHubUserListViewController: UIScrollViewDelegate {
     
     pullUpStackView.alpha = scale
     
-    if revealHeight > pullUpRevealHeight {
+    if checkItemReachLimit() {
+      setPullUpState(.ReachLimit)
+    } else if revealHeight > vm.pullUpRevealHeight {
       setPullUpState(.Release)
     } else {
       setPullUpState(.PullHint)
@@ -194,11 +163,11 @@ extension GitHubUserListViewController: UIScrollViewDelegate {
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if checkItemReachLimit() { return }
     
-    var homeIndicatorFix: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 34.0
+    let homeIndicatorFix: CGFloat = UIApplication.shared.keyWindow?.safeAreaInsets.bottom ?? 34.0
     let endScrolling = scrollView.contentOffset.y + scrollView.frame.size.height - homeIndicatorFix
     
-    if endScrolling >= scrollView.contentSize.height + pullUpRevealHeight {
-      NetworkController.shared.getUserList(since: sinceUserID)
+    if endScrolling >= scrollView.contentSize.height + vm.pullUpRevealHeight {
+      vm.getUserList()
     }
   }
 }
@@ -229,18 +198,7 @@ extension GitHubUserListViewController: NSFetchedResultsControllerDelegate {
     
     pullUpStackView.alpha = 0.0
     setPullUpState(.PullHint)
-  }
-}
-
-// MARK - Observer
-extension GitHubUserListViewController {
-  @objc func setLastUserID(_ notification: Notification) {
-    guard let passInDictionary = notification.userInfo as NSDictionary?,
-          let lastID = passInDictionary.object(forKey: "lastID") as? Int else {
-      print("error: notification.userInfo get msgType error!")
-      return
-    }
     
-    setSinceUserID(lastID)
+    vm.updateSinceUserIDFromFRC()
   }
 }

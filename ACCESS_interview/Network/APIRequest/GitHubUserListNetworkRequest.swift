@@ -8,7 +8,7 @@
 import Foundation
 
 class GitHubUserListNetworkRequest: NetworkRequestOperation {
-  init(_ since: Int) {
+  init(_ since: Int64) {
     super.init()
     sendGetRequest(urlString: String(format: "https://api.github.com/users?per_page=%d&since=%d", 20, since))
   }
@@ -23,14 +23,6 @@ class GitHubUserListNetworkRequest: NetworkRequestOperation {
     }
     
 //    print(userArray)
-    
-    if userArray.count > 0,
-       let lastItem = userArray.last,
-       let id = lastItem.object(forKey: "id") as? Int {
-      NotificationCenter.default.post(name: NotificationType.LastUserID.notificationName,
-                                      object: nil,
-                                      userInfo: ["lastID": NSNumber(integerLiteral: id)])
-    }
     
     DispatchQueue.global(qos: .default).async {
       GitUserHandler.updateUsers(userArray)

@@ -17,7 +17,7 @@ class NetworkController: NSObject {
     return queue
   }()
   
-  func getUserList(since: Int) {
+  func getUserList(since: Int64) {
     let operation = GitHubUserListNetworkRequest(since)
     queue.addOperation(operation)
   }

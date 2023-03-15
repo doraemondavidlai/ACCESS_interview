@@ -79,11 +79,7 @@ extension GitUserDetailViewController: UITableViewDataSource {
     switch DetailRows(rawValue: indexPath.row)! {
     case .Avatar:
       let cell = tableView.dequeueReusableCell(withIdentifier: "AvatarTableViewCell") as! AvatarTableViewCell
-      if let avatarImageSrc = userObject?.avatarUrl,
-         let avatarUrl = URL(string: avatarImageSrc) {
-        cell.display(url: avatarUrl)
-      }
-      
+      cell.display(userObject?.avatarUrl)
       cell.nameLabel.text = userObject?.name
       cell.bioLabel.text = userObject?.bio
       

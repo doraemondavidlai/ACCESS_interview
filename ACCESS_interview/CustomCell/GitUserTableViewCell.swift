@@ -35,12 +35,17 @@ class GitUserTableViewCell: UITableViewCell {
     userAvatarImageView.layer.masksToBounds = true
   }
   
-  func display(url: URL) {
+  func display(_ urlString: String?) {
+    guard let avatarImageSrc = urlString,
+          let avatarUrl = URL(string: avatarImageSrc) else {
+      return
+    }
+    
     userAvatarImageView.image = nil
     indicator.startAnimating()
     
     DispatchQueue.global(qos: .default).async { [weak self] in
-      guard let data = try? Data(contentsOf: url),
+      guard let data = try? Data(contentsOf: avatarUrl),
             let image = UIImage(data: data) else {
         return
       }
